@@ -1,1 +1,3 @@
-# app/simulation/__init__.py
+from flask import Blueprint
+
+bp = Blueprint('simulation', __name__)

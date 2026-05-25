@@ -1,1 +1,3 @@
-# app/meals/__init__.py
+from flask import Blueprint
+
+bp = Blueprint('meals', __name__)
