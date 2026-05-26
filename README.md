@@ -444,8 +444,8 @@ AI agent aşağıdaki kurallara HARFİYEN uymalıdır:
 | 4.2 | base.html oluştur | 4.1 | ✅ Tamamlandı |
 | 4.3 | disclaimer modal ekle | 4.2 | ✅ Tamamlandı |
 | 5.1 | Çoklu dil sistemi (tr.json, en.json ve helper) | 1.1 | ✅ Tamamlandı |
-| 6.1 | simulation engine yaz | 2.1 | ⏳ Bekliyor |
-| 6.2 | simulation routes yaz | 6.1 | ⏳ Bekliyor |
+| 6.1 | simulation engine yaz | 2.1 | ✅ Tamamlandı |
+| 6.2 | simulation routes yaz | 6.1 | ✅ Tamamlandı |
 | 6.3 | simulation forms oluştur | 3.1 | ⏳ Bekliyor |
 | 7.1 | meals routes + pagination | 2.1 | ⏳ Bekliyor |
 | 7.2 | meals.html oluştur | 7.1 | ⏳ Bekliyor |
