@@ -59,7 +59,7 @@ Git/GitHub altyapısının kurulması, projenin anayasası niteliğindeki README
 
 ---
 
-## Oturum 3 - 26 Mayıs 2026 - 12:30-14:00
+## Oturum 3 - 26 Mayıs 2026 - 12:30-14:10
 
 ### Hedef
 Projenin veritabanı modellerinin (Görev 2.1) SQLAlchemy 2.x standartlarına (Mapped, mapped_column) uygun olarak oluşturulması ve iş mantığı (business logic) hatalarının giderilmesi.
@@ -94,3 +94,25 @@ Veritabanını kurmadan hemen önce `app/__init__.py` dosyamı DeepSeek'e denetl
 	2.	Hatalı Telegram Rotası: Arka planda çalışacak bot için gereksiz yere Blueprint açılmıştı, ImportError vermemesi için sildim.
 	3.	Login Yönlendirmesi: Giriş yapmayan kullanıcılar için `login_view` ayarını ekledim.
 Ders: Ana ajanın kodlarını çalıştırmadan önce farklı bir yapay zekaya (Auditor) denetletmek, saatlerce sürecek hata ayıklama (debugging) çilesini önlüyor.
+
+---
+
+## Oturum 4 - 26 Mayıs 2026 - 14:40-15:20
+
+### Hedef
+Görev 2.2 (Flask-Migrate yapılandırması) adımıyla modellerin fiziksel SQLite veritabanına dönüştürülmesi.
+
+### Kullandığım Mod ve Model
+•	Mod: Plan ve Fast
+•	Model: Claude Opus 4.6 (Kod Üretimi) ve DeepSeek (Code Review)
+•	Görünüm: Antigravity IDE - Agent Chat
+
+### Ajanın Önerdiği Plan ve Müdahalelerim
+•	AI Halüsinasyonu ve Görev Sırası İhlali: Ajan, FLASK_APP ortam değişkenini atayabilmek için run.py dosyasına ihtiyacı olduğunu iddia ederek Görev 13.4'e atlamaya ve run.py dosyasını oluşturmaya kalkıştı.
+•	Mimari Müdahale (Override): Bir yazılım mimarı olarak bu isteği "Reject" ettim (reddettim). Ajana projede "Application Factory" deseni kullandığımızı, Flask CLI'ın export FLASK_APP=app komutuyla create_app fonksiyonunu otomatik tanıyacağını ve run.py dosyasına şu aşamada kesinlikle ihtiyaç olmadığını belirttim. README anayasamızdaki "Görev sırası değiştirilemez" kuralını hatırlatarak ajanı hizaya soktum.
+
+### Üretilen Kodda Düzelttiklerim / Belirlediklerim
+•	Ajanın yanlışlıkla oluşturmaya yeltendiği run.py dosyasını rm -f run.py komutuyla sildirdim. Ardından doğrudan flask db init, migrate ve upgrade komutlarını onaylayarak 3 tablomuzu barındıran bionic_pancreas.db (36 KB) dosyasının başarıyla oluşturulmasını sağladım.
+
+### Bu Oturumdan Öğrendiğim
+Yapay zeka araçlarının "bu olmadan şu çalışmaz" şeklindeki kesin yargılarına (hallucination) her zaman güvenmemek gerektiğini öğrendim. Framework'ün (Flask) derin çalışma mantığını (CLI ve Application Factory) bilmek, beni gereksiz dosyalar oluşturmaktan ve proje anayasasını ihlal etmekten kurtardı.
