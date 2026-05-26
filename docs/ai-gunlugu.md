@@ -116,3 +116,5 @@ Görev 2.2 (Flask-Migrate yapılandırması) adımıyla modellerin fiziksel SQLi
 
 ### Bu Oturumdan Öğrendiğim
 Yapay zeka araçlarının "bu olmadan şu çalışmaz" şeklindeki kesin yargılarına (hallucination) her zaman güvenmemek gerektiğini öğrendim. Framework'ün (Flask) derin çalışma mantığını (CLI ve Application Factory) bilmek, beni gereksiz dosyalar oluşturmaktan ve proje anayasasını ihlal etmekten kurtardı.
+
+•	Kriz Yönetimi (Git Geçmişi Temizliği): Projede `.gitignore` dosyasının eksik olduğunu ve `venv` (sanal ortam) klasörünün yanlışlıkla Git takibine alındığını fark ettim. Binlerce kütüphane dosyasının GitHub'a pushlanıp repository'i şişirmesini (ve rubrikten eksi puan almayı) önlemek için acil müdahale ettim. Terminalden `git rm -r --cached venv` komutuyla klasörü takipten çıkardım ve ajana hızlıca standartlara uygun bir `.gitignore` dosyası oluşturttum.
