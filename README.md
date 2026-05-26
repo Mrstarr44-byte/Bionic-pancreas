@@ -441,7 +441,7 @@ AI agent aşağıdaki kurallara HARFİYEN uymalıdır:
 | 3.2 | auth blueprint routes | 3.1 | ✅ Tamamlandı |
 | 3.3 | LoginManager yapılandır | 3.2 | ✅ Tamamlandı |
 | 4.1 | main blueprint routes | 1.4 | ✅ Tamamlandı |
-| 4.2 | base.html oluştur | 4.1 | ⏳ Bekliyor |
+| 4.2 | base.html oluştur | 4.1 | ✅ Tamamlandı |
 | 4.3 | disclaimer modal ekle | 4.2 | ⏳ Bekliyor |
 | 5.1 | tr.json oluştur | 1.1 | ⏳ Bekliyor |
 | 5.2 | en.json oluştur | 1.1 | ⏳ Bekliyor |
