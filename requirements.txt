@@ -9,3 +9,7 @@ python-telegram-bot==21.9
 Pillow==11.1.0
 python-dotenv==1.0.1
 gunicorn==23.0.0
+pytest==8.3.4
+flake8==7.1.1
+SQLAlchemy==2.0.36
+Babel==2.16.0

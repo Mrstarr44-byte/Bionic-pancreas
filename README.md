@@ -434,7 +434,7 @@ AI agent aşağıdaki kurallara HARFİYEN uymalıdır:
 | 1.2 | requirements.txt oluştur | 1.1 | ✅ Tamamlandı |
 | 1.3 | config.py oluştur | 1.1 | ✅ Tamamlandı |
 | 1.4 | app/__init__.py factory sistemi | 1.1, 1.3 | ✅ Tamamlandı |
-| 2.1 | models.py oluştur | 1.4 | ⏳ Bekliyor |
+| 2.1 | models.py oluştur | 1.4 | ✅ Tamamlandı |
 | 2.2 | Flask-Migrate yapılandır | 2.1 | ⏳ Bekliyor |
 | 2.3 | Seed sistemi ve başlangıç verileri | 2.1 | ⏳ Bekliyor |
 | 3.1 | forms.py auth formları | 2.1 | ⏳ Bekliyor |

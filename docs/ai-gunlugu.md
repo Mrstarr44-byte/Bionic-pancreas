@@ -59,7 +59,7 @@ Git/GitHub altyapısının kurulması, projenin anayasası niteliğindeki README
 
 ---
 
-## Oturum 3 - 26 Mayıs 2026 - 12:30-13:30
+## Oturum 3 - 26 Mayıs 2026 - 12:30-14:00
 
 ### Hedef
 Projenin veritabanı modellerinin (Görev 2.1) SQLAlchemy 2.x standartlarına (Mapped, mapped_column) uygun olarak oluşturulması ve iş mantığı (business logic) hatalarının giderilmesi.
@@ -85,3 +85,5 @@ Projenin veritabanı modellerinin (Görev 2.1) SQLAlchemy 2.x standartlarına (M
 
 ### Bu Oturumdan Öğrendiğim
 Vibe Coding kesinlikle "kodu kopyala-yapıştır" demek değildir. Ajanlar bazen ilk verilen talimatlara körü körüne saplanıp kalabiliyor. Böyle durumlarda kod üzerinde inatlaşmak yerine, "iş mantığını (business logic) değiştirdiğimizi" açıkça belirterek direksiyonu ele almanın şart olduğunu öğrendim. En büyük ders ise: Kodda mimari bir karar değiştiğinde, yapay zekanın tek hafızası olan README anayasasını güncellemek zorunludur.
+
+•	Ek Not (Ajanın Unutkanlığı): Ajan büyük mimari değişikliklere odaklandığı için README'deki 2.1 numaralı göreve 'Tamamlandı' tikini atmayı unuttu. Kendisini uyararak anayasayı tekrar güncellettirdim. Vibe coding yaparken ajanın karmaşık işleri çözerken en basit idari adımları (checkbox işaretlemek gibi) atlayabildiğini tecrübe ettim.
