@@ -1,1 +1,7 @@
-# app/main/routes.py - Ana sayfa rotaları (Görev 4.1'de doldurulacak)
+from flask import render_template
+from app.main import bp
+
+@bp.route('/')
+@bp.route('/index')
+def index():
+    return render_template('index.html', title='Ana Sayfa')
