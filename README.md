@@ -438,7 +438,7 @@ AI agent aşağıdaki kurallara HARFİYEN uymalıdır:
 | 2.2 | Flask-Migrate yapılandır | 2.1 | ✅ Tamamlandı |
 | 2.3 | Seed sistemi ve başlangıç verileri | 2.1 | ✅ Tamamlandı |
 | 3.1 | forms.py auth formları | 2.1 | ✅ Tamamlandı |
-| 3.2 | auth blueprint routes | 3.1 | ⏳ Bekliyor |
+| 3.2 | auth blueprint routes | 3.1 | ✅ Tamamlandı |
 | 3.3 | LoginManager yapılandır | 3.2 | ⏳ Bekliyor |
 | 4.1 | main blueprint routes | 1.4 | ⏳ Bekliyor |
 | 4.2 | base.html oluştur | 4.1 | ⏳ Bekliyor |

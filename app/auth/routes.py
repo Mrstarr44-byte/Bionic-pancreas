@@ -1,1 +1,43 @@
-# app/auth/routes.py - Kimlik doğrulama rotaları (Görev 3.2'de doldurulacak)
+from urllib.parse import urlsplit
+from flask import render_template, flash, redirect, url_for, request
+from flask_login import current_user, login_user, logout_user, login_required
+from app import db
+from app.auth import bp
+from app.models import User
+from app.forms import LoginForm, RegistrationForm
+
+@bp.route('/login', methods=['GET', 'POST'])
+def login():
+    if current_user.is_authenticated:
+        return redirect(url_for('main.index'))
+    form = LoginForm()
+    if form.validate_on_submit():
+        user = db.session.execute(db.select(User).filter_by(username=form.username.data)).scalar()
+        if not user or not user.check_password(form.password.data):
+            flash('Geçersiz kullanıcı adı veya şifre', 'danger')
+            return redirect(url_for('auth.login'))
+        login_user(user, remember=form.remember_me.data)
+        next_page = request.args.get('next')
+        if not next_page or urlsplit(next_page).netloc != '':
+            next_page = url_for('main.index')
+        return redirect(next_page)
+    return render_template('login.html', title='Giriş Yap', form=form)
+
+@bp.route('/logout')
+def logout():
+    logout_user()
+    return redirect(url_for('main.index'))
+
+@bp.route('/register', methods=['GET', 'POST'])
+def register():
+    if current_user.is_authenticated:
+        return redirect(url_for('main.index'))
+    form = RegistrationForm()
+    if form.validate_on_submit():
+        user = User(username=form.username.data, email=form.email.data)
+        user.set_password(form.password.data)
+        db.session.add(user)
+        db.session.commit()
+        flash('Tebrikler, şimdi giriş yapabilirsiniz!', 'success')
+        return redirect(url_for('auth.login'))
+    return render_template('register.html', title='Kayıt Ol', form=form)
