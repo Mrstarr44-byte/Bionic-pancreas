@@ -446,7 +446,7 @@ AI agent aşağıdaki kurallara HARFİYEN uymalıdır:
 | 5.1 | Çoklu dil sistemi (tr.json, en.json ve helper) | 1.1 | ✅ Tamamlandı |
 | 6.1 | simulation engine yaz | 2.1 | ✅ Tamamlandı |
 | 6.2 | simulation routes yaz | 6.1 | ✅ Tamamlandı |
-| 6.3 | simulation forms oluştur | 3.1 | ⏳ Bekliyor |
+| 6.3 | simulation forms oluştur | 3.1 | ✅ Tamamlandı |
 | 7.1 | meals routes + pagination | 2.1 | ⏳ Bekliyor |
 | 7.2 | meals.html oluştur | 7.1 | ⏳ Bekliyor |
 | 8.1 | API endpoint oluştur | 2.1 | ⏳ Bekliyor |
