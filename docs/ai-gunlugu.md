@@ -56,3 +56,32 @@ Git/GitHub altyapısının kurulması, projenin anayasası niteliğindeki README
 
 ### Bu Oturumdan Öğrendiğim
 "Terminal Command Auto Execution: Request Review" ayarının hayat kurtarıcı olduğunu tecrübe ettim. README.md dosyasını "sabit hafıza" olarak kullandığımda, modeller arası geçiş (Claude -> Gemini) yapsam bile context kaybı yaşanmadığını gördüm. Ayrıca, yapay zekanın yazdığı kod syntax olarak doğru olsa bile, projenin o anki bağlamına göre çalışma zamanı (runtime) hataları verebileceğini öğrendim. Farklı AI modellerini birbirine denetletmek (Gemini'ye yazdırıp DeepSeek'e audit yaptırmak) geleneksel debug sürecini çok daha güvenli hale getiriyor.
+
+---
+
+## Oturum 3 - 26 Mayıs 2026 - 12:30-13:30
+
+### Hedef
+Projenin veritabanı modellerinin (Görev 2.1) SQLAlchemy 2.x standartlarına (Mapped, mapped_column) uygun olarak oluşturulması ve iş mantığı (business logic) hatalarının giderilmesi.
+
+### Kullandığım Mod ve Model
+•	Mod: Plan ve Fast
+•	Model: Gemini 3.1 Pro, Claude Opus 4.6 (Kod Üretimi) ve DeepSeek (Code Review / Çapraz Sorgu)
+•	Görünüm: Antigravity IDE - Agent Chat (Editor View)
+
+### Verdiğim Promptlar
+1.	İlk Komut: "Görev 2.1 — models.py oluştur. Kesinlikle SQLAlchemy 2.x kullan. User, SimulationLog, MealPreset modellerini tanımla ve User ile MealPreset arasında ilişki kur."
+2.	Revize Komutu (Claude'a): "MealPreset ortak kütüphanedir, user_id ilişkisini tamamen sil. Ekstra alanları ekle."
+3.	Manuel Müdahale (Reject Sonrası): "Teknik notunu okudum ancak mimariyi değiştirdik. İlk verdiğim 'ilişki kur' kuralını İPTAL EDİYORUZ. User_id'yi tamamen sil ve şu alanları koy..."
+4.	Anayasa (README) Güncellemesi: "models.py'de yaptığımız mimari güncellemeyi README'ye işle. MealPreset'in global bir kütüphane olduğunu anayasaya ekle."
+
+### Ajanın Önerdiği Plan ve Müdahalelerim
+•	DeepSeek ile Çapraz Sorgu (Cross-Validation): Ajan ilk başta mükemmel bir SQLAlchemy 2.x kodu üretti ancak verdiğim eksik prompt yüzünden MealPreset'i User tablosuna bağladı. Kodu DeepSeek'e denetlettiğimde hayati bir uyarı aldım: "Yemek kütüphanesi kullanıcıya özel olamaz, global olmalı. Ayrıca README'deki dil, telegram_id gibi alanlar eksik."
+•	Yapay Zeka İnadı (Hallucination/Stubbornness) ve Override: Hatayı düzeltmesi için Claude'a yeni komut verdim. Ancak Claude eski bağlama (context) takılı kalarak "User ile ilişki kurmamı istemiştiniz, user_id zorunlu" diyerek ukalalık yaptı ve negatif promptları görmezden geldi. Kodu "Reject" (Reddet) yaparak çöpe attım ve mimari karar değişikliğini sert ve net bir dille ifade eden manuel bir prompt ile otoriteyi sağladım.
+•	Anayasa (README) Senkronizasyonu: Kodda yaptığımız bu radikal mimari değişikliği anında README.md dosyasına yansıttım. İleriki görevlerde (örneğin formlar oluşturulurken) ajanın tekrar eski kurallara bakıp hata yapmasının (hallucination) önüne geçtim.
+
+### Üretilen Kodda Düzelttiklerim / Belirlediklerim
+•	Sadece Mapped[float] yazılan yerlerin Alembic (Flask-Migrate) tarafından hata vermemesi için sonlarına = mapped_column(Float) atamalarını kendim ekleterek kodu göçmelere karşı zırhlı hale getirdim. Ayrıca glucose_after gibi bazı alanların her senaryoda dolu olamayacağını öngörerek onları Optional bıraktım.
+
+### Bu Oturumdan Öğrendiğim
+Vibe Coding kesinlikle "kodu kopyala-yapıştır" demek değildir. Ajanlar bazen ilk verilen talimatlara körü körüne saplanıp kalabiliyor. Böyle durumlarda kod üzerinde inatlaşmak yerine, "iş mantığını (business logic) değiştirdiğimizi" açıkça belirterek direksiyonu ele almanın şart olduğunu öğrendim. En büyük ders ise: Kodda mimari bir karar değiştiğinde, yapay zekanın tek hafızası olan README anayasasını güncellemek zorunludur.

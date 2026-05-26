@@ -54,6 +54,8 @@ Minimum modeller:
 - SimulationLog
 - MealPreset
 
+⚠️ KURAL: MealPreset global ve ortak bir yemek kütüphanesidir. User modeli ile hiçbir ilişkisi (Foreign Key veya relationship) YOKTUR.
+
 ## Migration
 - Flask-Migrate
 
