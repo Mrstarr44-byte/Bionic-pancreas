@@ -97,31 +97,33 @@ Ders: Ana ajanın kodlarını çalıştırmadan önce farklı bir yapay zekaya (
 
 ---
 
-## Oturum 4 - 26 Mayıs 2026 - 14:40-15:50
+## Oturum 4 - 26 Mayıs 2026 - 14:40-16:15
 
 ### Hedef
 1. Görev 2.2 (Flask-Migrate yapılandırması) adımıyla modellerin fiziksel SQLite veritabanına dönüştürülmesi.
-2. Görev 3.1 (forms.py - Kimlik Doğrulama Formlarının Oluşturulması) adımının tamamlanması.
+2. Görev 2.3 (Seed Sistemi) ile başlangıç verilerinin (test kullanıcısı ve örnek yemekler) eklenmesi.
+3. Görev 3.1 (forms.py - Kimlik Doğrulama Formları) adımının tamamlanması.
+4. Görev 3.2 ve 3.3 ile Auth rotalarının (login/register/logout) güvenlik standartlarına uygun şekilde oluşturulup LoginManager'ın yapılandırılması.
 
 ### Kullandığım Mod ve Model
 •	Mod: Plan ve Fast (Kademeli ilerleme için)
-•	Model: Gemini 3.5 Flash (Başlangıç), Gemini 3 Pro (High) / Claude Opus 4.6 (Kod Üretimi / Thinking) ve DeepSeek (Code Review)
+•	Model: Gemini 3.5 Flash / Claude Opus 4.6 (Kod Üretimi) / GPT-OSS 120B (Kod Üretimi) ve DeepSeek (Code Review)
 •	Görünüm: Antigravity IDE - Agent Chat / Editor View
 
 ### Ajanın Önerdiği Plan ve Müdahalelerim
-•	AI Halüsinasyonu ve Görev Sırası İhlali (Görev 2.2): Ajan, FLASK_APP ortam değişkenini atayabilmek için run.py dosyasına ihtiyacı olduğunu iddia ederek Görev 13.4'e atlamaya ve run.py dosyasını oluşturmaya kalkıştı.
-•	Mimari Müdahale (Override): Bir yazılım mimarı olarak bu isteği "Reject" ettim (reddettim). Ajana projede "Application Factory" deseni kullandığımızı, Flask CLI'ın export FLASK_APP=app komutuyla create_app fonksiyonunu otomatik tanıyacağını ve run.py dosyasına şu aşamada kesinlikle ihtiyaç olmadığını belirttim. README anayasamızdaki "Görev sırası değiştirilemez" kuralını hatırlatarak ajanı hizaya soktum.
-•	Eksik Paket Tuzağı (Dependency Check - Görev 3.1): Ajan WTForms içindeki `Email()` validator'ını doğrudan yazıp geçmeye çalıştı. Ancak bu validator'ın çalışabilmesi için arka planda `email-validator` harici paketinin kurulu olması gerektiğini, aksi halde runtime'da sistemin çökeceğini fark ettim. Kod üretilmeden önce ajana `pip install email-validator` komutunu çalıştırıp bağımlılığı `requirements.txt` dosyasına eklettim.
-•	Mimari Güvenlik Önlemleri: Form içi dinamik veritabanı kontrollerinde döngüsel kilitlenmeyi (circular import) engellemek amacıyla `from app import db` içe aktarımını küresel yerine yerel metot scope'larında (`validate_username`, `validate_email`) çözdürdüm. Model sorgularını ise tamamen SQLAlchemy 2.x (`db.select`) standartlarında yazdırdım.
+•	AI Halüsinasyonu ve Görev Sırası İhlali (Görev 2.2): Ajan, FLASK_APP ortam değişkenini atayabilmek için run.py dosyasına ihtiyacı olduğunu iddia ederek Görev 13.4'e atlamaya kalkıştı. Bir yazılım mimarı olarak bu isteği "Reject" ettim. Ajana projede "Application Factory" deseni kullandığımızı, Flask CLI'ın export FLASK_APP=app komutuyla create_app fonksiyonunu otomatik tanıyacağını belirttim.
+•	Eksik Paket Tuzağı (Görev 3.1): Ajan WTForms içindeki Email() validator'ını doğrudan yazıp geçmeye çalıştı. Ancak bu validator'ın arka planda email-validator paketini gerektirdiğini, aksi halde runtime'da sistemin çökeceğini fark ettim. Kod üretilmeden önce ajana pip install email-validator komutunu çalıştırıp bağımlılığı requirements.txt'ye eklettim.
+•	Siber Güvenlik ve Mimari Kalkanlar (Görev 3.1 & 3.2): Form içi dinamik kontrollerde circular import'u engellemek için from app import db aktarımını yerel metot scope'larına taşıttım. Ayrıca /login rotasında "Open Redirect" zafiyeti oluşabileceğini fark edip urlsplit(next_page).netloc != '' kalkanını zorunlu tuttum. Son olarak, Blueprint rotalarının uygulamayı çökertmemesi için routes importunu app/auth/__init__.py dosyasının en sonuna taşıttım.
 
 ### Üretilen Kodda Düzelttiklerim / Belirlediklerim
-•	Ajanın yanlışlıkla oluşturmaya yeltendiği run.py dosyasını rm -f run.py komutuyla sildirdim. Ardından doğrudan flask db init, migrate ve upgrade komutlarını onaylayarak 3 tablomuzu barındıran bionic_pancreas.db (36 KB) dosyasının başarıyla oluşturulmasını sağladım.
-•	`app/forms.py` dosyası `LoginForm` ve `RegistrationForm` sınıflarıyla eksiksiz dolduruldu; `requirements.txt` güncellendi.
+•	Ajanın oluşturmaya yeltendiği run.py dosyası silindi; doğrudan flask db init, migrate ve upgrade komutlarıyla bionic_pancreas.db başarıyla oluşturuldu. seed.py ile test verileri basıldı.
+•	app/forms.py dosyası eksiksiz dolduruldu; requirements.txt güncellendi.
+•	app/auth/routes.py dosyası güvenli yönlendirmeler ve SQLAlchemy 2.x standardı (db.select) ile kusursuz entegre edildi.
 
 ### Bu Oturumdan Öğrendiğim
-•	Yapay zeka araçlarının "bu olmadan şu çalışmaz" şeklindeki kesin yargılarına (hallucination) her zaman güvenmemek gerektiğini öğrendim. Framework'ün (Flask) derin çalışma mantığını (CLI ve Application Factory) bilmek, beni gereksiz dosyalar oluşturmaktan ve proje anayasasını ihlal etmekten kurtardı.
-•	Kriz Yönetimi (Git Geçmişi Temizliği): Projede `.gitignore` dosyasının eksik olduğunu ve `venv` (sanal ortam) klasörünün yanlışlıkla Git takibine alındığını fark ettim. Binlerce kütüphane dosyasının GitHub'a pushlanıp repository'i şişirmesini (ve rubrikten eksi puan almayı) önlemek için acil müdahale ettim. Terminalden `git rm -r --cached venv` komutuyla klasörü takipten çıkardım ve ajana hızlıca standartlara uygun bir `.gitignore` dosyası oluşturttum.
-•	Framework bileşenlerinin yerleşik görünen metotlarının arka plandaki gizli bağımlılıklarını (peer dependencies) önceden analiz etmenin, projenin canlıya çıkış (deployment) aşamasındaki kritik hataları henüz lokalde temizlemek adına ne kadar hayati olduğunu öğrendim.
+•	Yapay zeka araçlarının "bu olmadan şu çalışmaz" şeklindeki kesin yargılarına (hallucination) her zaman güvenmemek gerektiğini öğrendim. Framework'ün (Flask) derin çalışma mantığını bilmek, beni proje anayasasını ihlal etmekten kurtardı.
+•	Kriz Yönetimi (Git Temizliği): Projede .gitignore eksikliği yüzünden venv (sanal ortam) klasörünün Git takibine alındığını fark ettim. Binlerce kütüphane dosyasının repoyu şişirmesini önlemek için git rm -r --cached venv ile acil müdahale edip .gitignore kalkanını oluşturdum.
+•	AI ajanlarının sadece "çalışan" bir kod üretmesinin yeterli olmadığını, üretilen rotaların siber güvenlik (Open Redirect) ve bağımlılık (Peer Dependencies) perspektifiyle mimar tarafından denetlenmesi gerektiğini tecrübe ettim.
 
 ### Sonraki Oturum İçin Notlar
-Kullanıcı giriş/çıkış ve kayıt rotalarını canlandıracağımız Görev 3.2 (auth blueprint routes) adımına geçilecek.
+Kısa bir molanın ardından ana web sayfalarının (main blueprint) ve frontend'in kalbi olacak Jinja2 base.html şablonunun (Görev 4 serisi) inşasına başlanacak.
