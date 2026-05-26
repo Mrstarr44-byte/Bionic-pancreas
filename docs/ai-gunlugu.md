@@ -33,7 +33,7 @@ Git/GitHub altyapısının kurulması, projenin anayasası niteliğindeki README
 
 ### Kullandığım Mod ve Model
 •	Mod: Plan ve Fast (Kademeli ilerleme için)
-•	Model: Gemini 3.5 Flash (Başlangıç), Claude Opus 4.6 (Dosya ağacı üretimi), Gemini 3.1 Pro (Mimari ve Kodlama), DeepSeek (Code Review / Hata Ayıklama)
+•	Model: Gemini 3.5 Flash (Başlangıç), Gemini 3.1 Pro (Mimari kuralları belirleme), Claude Opus 4.6 (Kod ve dosya üretimi)
 •	Görünüm: Antigravity IDE - Agent Chat (Editor View)
 
 ### Verdiğim Promptlar
@@ -41,21 +41,16 @@ Git/GitHub altyapısının kurulması, projenin anayasası niteliğindeki README
 2.	Hazırladığım 18 maddelik "Proje Anayasası ve AI Kısıtlamaları" metninin tam olarak README.md dosyasına yazdırılması ve .gitignore dosyasının oluşturulması.
 3.	Claude Opus 4.6'ya geçiş: "README.md dosyasını oku ve Görev 1.1'i (Klasör yapısını) çift alt çizgili __init__.py kurallarına dikkat ederek oluştur."
 4.	"Harika. Şimdi Görev 1.2'yi yap ve requirements.txt içine belirttiğim paketleri (Flask==3.1.0 vb.) sürüm numaralarıyla sabitleyerek ekle."
-5.	Gemini 3.1 Pro'ya geçiş: "Görev 1.3 — app/config.py Yaz. Ortam değişkenlerinden okuyan bir Config sınıfı oluştur."
-6.	"Görev 1.4 — app/init.py factory sistemi. create_app fonksiyonunu yaz ve eklentileri bağla, blueprintleri register et."
-7.	Gemini 3.1 Pro'ya (Yama Promptu): "app/init.py dosyası harika oldu ancak uygulamanın ImportError verip çökmemesi için 7 adet blueprint klasörünün içindeki boş init.py dosyalarını aç ve her biri için temel Blueprint nesnelerini tanımla."
 
 ### Ajanın Önerdiği Plan ve Müdahalelerim
 •	Git ve GitHub Entegrasyon Krizi: Terminal üzerinden ilk commit'leri atarken MacOS'un "akıllı tırnak" özelliği yüzünden terminalde dquote> hatası (askıda kalma durumu) yaşadım. Ajanın doğrudan müdahale edemediği bu donanım/işletim sistemi sorununu, Ctrl+C ile işlemi iptal edip, commit mesajlarında çift tırnak yerine tek tırnak (') kullanarak kendim çözdüm.
-•	Kritik Müdahale (Ajanın Adım Adım İlerlemesi): Görev 1.1'i verdiğimde, ajan terminalde sadece mkdir komutu ile boş klasörleri oluşturmak için izin istedi. İlk başta eksik yaptığını düşündüm ancak "Request Review" (Sandbox onayı) özelliği sayesinde ajanın önce iskeleti kurup sonra dosyaları içine yerleştirme stratejisi izlediğini fark ettim. İlk adıma onay verip süreci kontrol altında tuttum.
-•	Kritik Çapraz Sorgu (Cross-Validation) ve Hata Yakalama: Gemini, Görev 1.4'te create_app fonksiyonunu kusursuz yazdı ve main, auth gibi blueprintleri app/__init__.py içinde import etti. Ancak projenin güvenliğinden emin olmak için yazılan kodu DeepSeek'e incelettim. DeepSeek bana hayati bir uyarı yaptı: Blueprint klasörlerinin içindeki __init__.py dosyaları şu an boş, dolayısıyla from app.main import bp komutu bir ImportError fırlatacak ve uygulama çökecek. Gemini'ye hemen ek bir komut vererek bu durumu düzelttirdim.
+•	Kritik Müdahale (Ajanın Adım Adım İlerlemesi): Görev 1.1'i verdiğimde, ajan (Claude 4.6) terminalde sadece mkdir komutu ile boş klasörleri oluşturmak için izin istedi. İlk başta eksik yaptığını (çünkü içindeki .py ve .html dosyalarını oluşturmadığını) düşündüm. Ancak Antigravity'nin Request Review (Sandbox onayı) özelliği sayesinde ajanın planını incelediğimde, bunun bir hata olmadığını, ajanın önce iskeleti kurup sonra dosyaları içine yerleştirme stratejisi izlediğini fark ettim. İlk adıma onay verdim ve hemen ardından dosyaları yaratmasını bekleyerek süreci kontrol altında tuttum.
 
 ### Üretilen Kodda Düzelttiklerim / Belirlediklerim
-•	Sürüm Çakışması Önlemi: Ajanın requirements.txt dosyasını kendi inisiyatifiyle doldurmasına izin vermedim. İleride dağıtım (deployment) aşamasında veya farklı ortamda uyumsuzluk çıkmaması için Flask, SQLAlchemy vb. bağımlılıkların versiyonlarını teker teker ben belirleyip ajana dikte ettim.
-•	Blueprint Çökme Yaması (Runtime Fix): Gemini'nin 1.4'te yazdığı factory kodu yanlış değildi, sadece Görev 1.1'de dosyaları bilerek boş bıraktırmıştık. Ancak uygulamanın crash olmaması kuralı gereği 7 farklı blueprint'in __init__.py dosyasına sadece temel bp = Blueprint(...) tanımlamalarını yaptırıp projeyi zırhlı hale getirdim.
+•	Sürüm Çakışması Önlemi: Ajanın requirements.txt dosyasını kendi inisiyatifiyle doldurmasına izin vermedim. İleride dağıtım (deployment) aşamasında veya farklı bir ortamda uyumsuzluk çıkmaması için Flask, SQLAlchemy ve diğer bağımlılıkların versiyonlarını teker teker ben belirleyip (örn: Flask==3.1.0) ajana dikte ettim.
 
 ### Bu Oturumdan Öğrendiğim
-"Terminal Command Auto Execution: Request Review" ayarının hayat kurtarıcı olduğunu tecrübe ettim. README.md dosyasını "sabit hafıza" olarak kullandığımda, modeller arası geçiş (Claude -> Gemini) yapsam bile context kaybı yaşanmadığını gördüm. Ayrıca, yapay zekanın yazdığı kod syntax olarak doğru olsa bile, projenin o anki bağlamına göre çalışma zamanı (runtime) hataları verebileceğini öğrendim. Farklı AI modellerini birbirine denetletmek (Gemini'ye yazdırıp DeepSeek'e audit yaptırmak) geleneksel debug sürecini çok daha güvenli hale getiriyor.
+"Terminal Command Auto Execution: Request Review" ayarının hayat kurtarıcı olduğunu bizzat tecrübe ettim. README.md dosyasını bir "sabit hafıza" olarak kullandığımda, modeli Gemini'den Claude'a geçirsem bile yeni modelin README'yi okuyarak hiçbir context (bağlam) kaybı yaşamadan aynı kurallarla yola devam edebildiğini öğrendim.
 
 ---
 
@@ -67,7 +62,7 @@ Projenin veritabanı modellerinin (Görev 2.1) SQLAlchemy 2.x standartlarına (M
 ### Kullandığım Mod ve Model
 •	Mod: Plan ve Fast
 •	Model: Gemini 3.1 Pro, Claude Opus 4.6 (Kod Üretimi) ve DeepSeek (Code Review / Çapraz Sorgu)
-•	Görünüm: Antigravity IDE - Agent Chat (Editor View)
+•	Görünüm: Antigravity IDE - Agent Chat / Editor View
 
 ### Verdiğim Promptlar
 1.	İlk Komut: "Görev 2.1 — models.py oluştur. Kesinlikle SQLAlchemy 2.x kullan. User, SimulationLog, MealPreset modellerini tanımla ve User ile MealPreset arasında ilişki kur."
@@ -160,3 +155,36 @@ Kısa bir molanın ardından ana web sayfalarının (main blueprint) ve frontend
 
 ### Sonraki Oturum İçin Notlar
 Uygulamanın tasarım iskeleti ve rotaları hazır. Bir sonraki aşamada Çoklu Dil Sistemi (Görev 5.1, 5.2, 5.3) veya ana simülasyon motorunun inşasına (Görev 6 serisi) geçiş yapılacak.
+
+---
+
+## Oturum 6 - 26 Mayıs 2026 - 20:10-21:30
+
+### Hedef
+1. Uygulamanın çoklu dil desteği (i18n) altyapısının kurulması ve optimize edilmesi. (Görev 5.1)
+2. Projenin kalbi olan saf (pure) İş Mantığı (Business Logic) katmanının, yani Simülasyon Motorunun (Simulation Engine) inşa edilmesi. (Görev 6.1)
+3. Simülasyon motorunun kullanıcı arayüzü ile konuşabilmesi için gerekli Blueprint rotalarının (Görev 6.2) ve WTForms tabanlı veri giriş formlarının (Görev 6.3) sisteme entegre edilmesi.
+
+### Kullandığım Mod ve Model
+•	Mod: Thinking
+•	Model: Gemini 3.1 Pro (Mimari Yönlendirme), Claude 4.6 (Kod Üretimi), DeepSeek (Code Review)
+•	Görünüm: Antigravity IDE - Agent Chat / Editor View
+
+### Ajanın Önerdiği Plan ve Müdahalelerim
+•	Görev Konsolidasyonu (Anayasa Müdahalesi): README dosyasında üçe bölünmüş olan dil sistemi görevlerini Vibe Coding sürecini bölmemek adına git status teyidi ile "Görev 5.1" altında birleştirdim.
+•	Performans (Cache) ve Encoding Koruması: DeepSeek'in tavsiyesiyle dil motoruna müdahale ettim. _cache = {} sözlüğü ile önbellek mekanizması kurdurttum ve okuma işlemine zorunlu encoding='utf-8' parametresini eklettim.
+•	Çoklu Model (Multi-Agent) Çapraz Denetimi (Görev 6.1): Simülasyon motorunu Claude modeline yazdırırken, tıbbi limitleri belirlerken DeepSeek'in (Code Reviewer) anayasadaki config ayarlarını hatırlatmasıyla tıbbi bir mantık hatasının (hiperglisemi sınırının 140'tan 180'e çekilmesi) önüne geçtim. Ayrıca motorun Türkçe metin döndürmesini engelleyip, i18n çeviri sistemine uygun İngilizce anahtarlar döndürmesini sağladım.
+•	Rota ve Form Bütünlüğü Koruma (Görev 6.2 & 6.3): Flask mimarisinde formsuz bir POST rotasının ImportError vereceğini öngörerek, ajanın "Sadece rota yaz" emriyle sistemi çökertmesini engelledim. İşlemi iki aşamaya böldüm: Önce sadece GET isteği karşılayan güvenli rotayı yazdırdım, ardından Bootstrap 5 ve CSRF korumalı formları güvenle rotaya monte ettirdim.
+
+### Üretilen Kodda Düzelttiklerim / Belirlediklerim
+•	app/translations/__init__.py içerisine güvenli yol bulma, utf-8 koruması, önbellekleme ve çökmeye karşı exception zırhı eklendi.
+•	app/simulation/engine.py dosyasına tıbbi limitler (20-600), ve ondalık yuvarlama (round) içeren sektörel bir hesaplama motoru eklendi.
+•	app/simulation/forms.py dosyası WTForms zırhıyla (DataRequired, NumberRange) oluşturuldu.
+•	app/simulation/routes.py içine POST sonrası mükerrer form gönderimini engelleyen PRG (Post/Redirect/Get) paterni başarıyla kuruldu ve hatalı girişlerde kullanıcıyı uyaran Bootstrap 5 tabanlı hata mesajı döngüleri sisteme eklendi.
+
+### Bu Oturumdan Öğrendiğim
+•	Farklı yapay zeka modellerini birbirini denetleyecek şekilde (Claude'u kod yazarı, DeepSeek'i Code Reviewer, Gemini'ı Mimar olarak) kullanmanın, oluşabilecek tıbbi ve mimari mantık hatalarını nasıl sıfıra indirdiğini tecrübe ettim.
+•	Kullanıcıdan veri alırken (Form), sadece HTML tarafında değil, Backend tarafında da (WTForms validators) sınırların belirlenmesinin siber güvenlik ve veri bütünlüğü (Data Integrity) açısından ne kadar kritik olduğunu öğrendim.
+
+### Sonraki Oturum İçin Notlar
+Dil motoru, simülasyon hesaplama altyapısı ve simülasyon arayüzü tamamen hazır. Bir sonraki adımda, kullanıcının yediği öğünleri veritabanına kaydedip listeleyebileceği "Meals (Öğünler)" sistemine (Görev 7 serisi) geçiş yapılacaktır.

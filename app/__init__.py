@@ -46,4 +46,13 @@ def create_app(config_class=Config):
     from app.errors import bp as errors_bp
     app.register_blueprint(errors_bp)
 
+    @app.context_processor
+    def inject_translation():
+        from flask import session
+        from app.translations import get_text
+        def translate(key):
+            lang = session.get('lang', 'tr')
+            return get_text(lang, key)
+        return dict(_=translate)
+
     return app
