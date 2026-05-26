@@ -20,7 +20,10 @@ def create_app(config_class=Config):
     # Initialize extensions
     db.init_app(app)
     migrate.init_app(app, db)
+    from app import models  # noqa: F401 — ensures tables are visible to Flask-Migrate
     login.init_app(app)
+    login.login_view = 'auth.login'
+    login.login_message_category = 'info'
     babel.init_app(app)
     csrf.init_app(app)
 
@@ -39,9 +42,6 @@ def create_app(config_class=Config):
 
     from app.api import bp as api_bp
     app.register_blueprint(api_bp) # url_prefix='/api/v1' is set in api/__init__.py
-
-    from app.telegram_bot import bp as telegram_bot_bp
-    app.register_blueprint(telegram_bot_bp, url_prefix='/telegram_bot')
 
     from app.errors import bp as errors_bp
     app.register_blueprint(errors_bp)

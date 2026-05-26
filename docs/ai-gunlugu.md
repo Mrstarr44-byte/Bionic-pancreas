@@ -87,3 +87,10 @@ Projenin veritabanı modellerinin (Görev 2.1) SQLAlchemy 2.x standartlarına (M
 Vibe Coding kesinlikle "kodu kopyala-yapıştır" demek değildir. Ajanlar bazen ilk verilen talimatlara körü körüne saplanıp kalabiliyor. Böyle durumlarda kod üzerinde inatlaşmak yerine, "iş mantığını (business logic) değiştirdiğimizi" açıkça belirterek direksiyonu ele almanın şart olduğunu öğrendim. En büyük ders ise: Kodda mimari bir karar değiştiğinde, yapay zekanın tek hafızası olan README anayasasını güncellemek zorunludur.
 
 •	Ek Not (Ajanın Unutkanlığı): Ajan büyük mimari değişikliklere odaklandığı için README'deki 2.1 numaralı göreve 'Tamamlandı' tikini atmayı unuttu. Kendisini uyararak anayasayı tekrar güncellettirdim. Vibe coding yaparken ajanın karmaşık işleri çözerken en basit idari adımları (checkbox işaretlemek gibi) atlayabildiğini tecrübe ettim.
+
+•	🚨 Ek Not: Migration Öncesi Hayat Kurtaran Code Review
+Veritabanını kurmadan hemen önce `app/__init__.py` dosyamı DeepSeek'e denetlettim ve uygulamanın çökmesini önleyen 3 kritik müdahale yaptım:
+	1.	Kayıp Modeller: `from app import models` importu eksikti. Eğer fark etmeseydim, Flask-Migrate tablolarımızı göremeyip boş bir veritabanı kuracaktı.
+	2.	Hatalı Telegram Rotası: Arka planda çalışacak bot için gereksiz yere Blueprint açılmıştı, ImportError vermemesi için sildim.
+	3.	Login Yönlendirmesi: Giriş yapmayan kullanıcılar için `login_view` ayarını ekledim.
+Ders: Ana ajanın kodlarını çalıştırmadan önce farklı bir yapay zekaya (Auditor) denetletmek, saatlerce sürecek hata ayıklama (debugging) çilesini önlüyor.
