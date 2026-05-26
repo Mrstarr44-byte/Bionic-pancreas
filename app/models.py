@@ -6,7 +6,7 @@ import bcrypt
 from sqlalchemy import String, Integer, Float, ForeignKey, DateTime
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from app import db
+from app import db, login
 
 
 class User(UserMixin, db.Model):
@@ -73,3 +73,7 @@ class SimulationLog(db.Model):
 
     def __repr__(self) -> str:
         return f'<SimulationLog {self.action_type} - Value: {self.value}>'
+
+@login.user_loader
+def load_user(id):
+    return db.session.get(User, int(id))
