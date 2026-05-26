@@ -188,3 +188,36 @@ Uygulamanın tasarım iskeleti ve rotaları hazır. Bir sonraki aşamada Çoklu 
 
 ### Sonraki Oturum İçin Notlar
 Dil motoru, simülasyon hesaplama altyapısı ve simülasyon arayüzü tamamen hazır. Bir sonraki adımda, kullanıcının yediği öğünleri veritabanına kaydedip listeleyebileceği "Meals (Öğünler)" sistemine (Görev 7 serisi) geçiş yapılacaktır.
+
+---
+
+## Oturum 7 - 26 Mayıs 2026 - 22:00-24:00
+
+### Hedef
+Kullanıcının yediği öğünleri veritabanına kaydedip listeleyebileceği "Meals (Öğünler)" sisteminin arka plan (Görev 7.1) ve ön yüz (Görev 7.2) entegrasyonunun tamamlanması. Formların PRG (Post/Redirect/Get) pattern ve CSRF korumasıyla sayfaya giydirilmesi, listelemede SQLAlchemy 2.x pagination (sayfalama) kullanılması.
+
+### Kullandığım Mod ve Model
+•	Mod: Plan
+•	Model: Claude Opus 4.6 (Antigravity içinde Kod Üretimi) ve Gemini 3.1 Pro (Tech Lead / Prompt Mimarı), DeepSeek (Code Review)
+•	Görünüm: Antigravity IDE - Agent Chat / Editor View
+
+### Verdiğim Promptlar
+1.	"Görev 7.2: meals.html oluştur – Yemek listesi sayfasına ekleme formu entegrasyonu" başlığıyla; MealPreset'in global olduğu, SQLAlchemy 2.x (db.select) kullanılacağı, Flask-WTF CSRF zorunluluğu ve Flask-Babel (i18n) destekli form alanları kurallarını içeren katı bir "Vibe Coding" promptu verdim. Prompt içerisinde modeldeki alanları varsayılan olarak name ve carbs olarak belirttim.
+2.	Ajanın yaptığı durum tespiti üzerine: "Harika bir tespit! Evet, models.py içindeki mevcut veritabanı şemasına (name_tr, name_en, carb_per_serving vb.) sadık kalmalıyız. Formu ve meals.html tablosunu bu gerçek sütun adlarına göre uyarla. Planı onaylıyorum, kodlamaya geçebilirsin." komutunu verdim.
+
+### Ajanın Önerdiği Plan ve Müdahalelerim (Kritik Vibe Coding Vakası)
+•	Hayat Kurtaran "Plan Modu" Denetimi: Ajana verdiğim promptta form alanları için sadece name ve carbs değerlerini kullanmasını söylemiştim. Ancak Antigravity ajanı (Claude Opus 4.6), "Fast" modda olup körü körüne bu komutu uygulamak yerine, projenin mevcut models.py dosyasını tarayarak bir durum analizi yaptı.
+•	Ajan bana şu plan uyarısıyla döndü: "Mevcut MealPreset modelinde name ve carbs sütunları yok. Bunun yerine name_tr, name_en, carb_per_serving, gi_value ve category sütunları tanımlı. Planı bu uyuşmazlığı giderecek şekilde güncelliyorum, onaylıyor musunuz?"
+•	Bir yazılım mimarı olarak, ajanın projeyi benden daha dikkatli okuyarak şema uyuşmazlığını (Schema Mismatch) tespit etmesini takdir ettim ve planı bu yönde revize etmesini onayladım.
+
+### Üretilen Kodda Düzelttiklerim / Belirlediklerim
+•	app/meals/forms.py dosyası Flask-Babel çoklu dil eklentisine uygun (lazy_gettext ile) ve veritabanındaki gerçek sütunlara (name_tr, name_en, carb_per_serving) birebir uyumlu WTForms formatında oluşturuldu.
+•	app/meals/routes.py içine PRG (Post/Redirect/Get) mimarisi ile db.session.add() ve db.paginate(select(MealPreset)) komutları SQLAlchemy 2.x kurallarına uygun şekilde yerleştirildi.
+•	app/templates/meals/index.html dosyası oluşturuldu. Sayfanın üstüne veri ekleme kartı, altına ise Jinja2 döngüsü ile dönen veri tablosu ve Bootstrap 5 Pagination elementleri başarıyla monte edildi.
+
+### Bu Oturumdan Öğrendiğim
+•	"Vibe Coding"in Çift Yönlü Gücü: Vibe coding'in sadece insanın yapay zekayı denetlemesi değil, doğru modda (Plan Modu) kullanıldığında yapay zekanın da insanın gözden kaçırdığı mimari/şema hatalarını denetleme olduğunu tecrübe ettim.
+•	Eğer ajan "Plan" modu yerine "Fast" modda çalışsaydı veya ajanın ürettiği metni okumadan direkt onaylasaydım; veritabanında olmayan name sütununa veri yazmaya çalışacağımız için sistem çalışma anında (Runtime) ağır bir AttributeError veya SQLAlchemyError vererek çökecekti. Süreci plan üzerinden yürütmek saatler sürecek bir debugging (hata ayıklama) işlemini saniyeler içinde önledi.
+
+### Sonraki Oturum İçin Notlar
+Uygulamanın veri girişi ve simülasyon arayüzleri tamamlandı. Bir sonraki adımda uygulamanın dış dünyayla konuşmasını sağlayacak API endpoint'inin (Görev 8.1) yazılmasına veya Telegram Bot (Görev 9.1) sisteminin inşasına başlanacaktır.

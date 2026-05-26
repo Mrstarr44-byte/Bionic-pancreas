@@ -1,0 +1,112 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2 class="mb-4">{{ _('Yemek Kütüphanesi') }}</h2>
+
+<!-- Yeni Yemek Ekleme Formu -->
+<div class="card shadow-sm mb-4">
+    <div class="card-header bg-primary text-white">
+        <h5 class="mb-0">{{ _('Yeni Yemek Ekle') }}</h5>
+    </div>
+    <div class="card-body">
+        <form method="POST" action="{{ url_for('meals.index') }}">
+            {{ form.hidden_tag() }}
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    {{ form.name_tr.label(class="form-label", text=_('Yemek Adı (TR)')) }}
+                    {{ form.name_tr(class="form-control") }}
+                    {% for error in form.name_tr.errors %}
+                        <div class="text-danger small">{{ error }}</div>
+                    {% endfor %}
+                </div>
+                <div class="col-md-6 mb-3">
+                    {{ form.name_en.label(class="form-label", text=_('Yemek Adı (EN)')) }}
+                    {{ form.name_en(class="form-control") }}
+                    {% for error in form.name_en.errors %}
+                        <div class="text-danger small">{{ error }}</div>
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4 mb-3">
+                    {{ form.carb_per_serving.label(class="form-label", text=_('Porsiyon Karbonhidrat (g)')) }}
+                    {{ form.carb_per_serving(class="form-control") }}
+                    {% for error in form.carb_per_serving.errors %}
+                        <div class="text-danger small">{{ error }}</div>
+                    {% endfor %}
+                </div>
+                <div class="col-md-4 mb-3">
+                    {{ form.gi_value.label(class="form-label", text=_('Glisemik İndeks')) }}
+                    {{ form.gi_value(class="form-control") }}
+                    {% for error in form.gi_value.errors %}
+                        <div class="text-danger small">{{ error }}</div>
+                    {% endfor %}
+                </div>
+                <div class="col-md-4 mb-3">
+                    {{ form.category.label(class="form-label", text=_('Kategori')) }}
+                    {{ form.category(class="form-control") }}
+                    {% for error in form.category.errors %}
+                        <div class="text-danger small">{{ error }}</div>
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="d-grid d-md-flex justify-content-md-end">
+                {{ form.submit(class="btn btn-primary", value=_('Ekle')) }}
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Yemek Listesi Tablosu -->
+<div class="table-responsive">
+    <table class="table table-striped table-hover">
+        <thead class="table-dark">
+            <tr>
+                <th>ID</th>
+                <th>{{ _('Yemek Adı (TR)') }}</th>
+                <th>{{ _('Yemek Adı (EN)') }}</th>
+                <th>{{ _('Porsiyon Karbonhidrat (g)') }}</th>
+                <th>{{ _('Glisemik İndeks') }}</th>
+                <th>{{ _('Kategori') }}</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for meal in meals %}
+            <tr>
+                <td>{{ meal.id }}</td>
+                <td>{{ meal.name_tr }}</td>
+                <td>{{ meal.name_en }}</td>
+                <td>{{ meal.carb_per_serving }}</td>
+                <td>{{ meal.gi_value }}</td>
+                <td>{{ meal.category or '—' }}</td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="6" class="text-center text-muted">{{ _('Henüz yemek eklenmemiş.') }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<!-- Sayfalama -->
+<nav aria-label="{{ _('Sayfalama') }}">
+    <ul class="pagination justify-content-center">
+        {% if pagination.has_prev %}
+        <li class="page-item">
+            <a class="page-link" href="{{ url_for('meals.index', page=pagination.prev_num) }}">{{ _('Önceki') }}</a>
+        </li>
+        {% endif %}
+
+        <li class="page-item disabled">
+            <a class="page-link">{{ _('Sayfa') }} {{ pagination.page }} / {{ pagination.pages }}</a>
+        </li>
+
+        {% if pagination.has_next %}
+        <li class="page-item">
+            <a class="page-link" href="{{ url_for('meals.index', page=pagination.next_num) }}">{{ _('Sonraki') }}</a>
+        </li>
+        {% endif %}
+    </ul>
+</nav>
+{% endblock %}
