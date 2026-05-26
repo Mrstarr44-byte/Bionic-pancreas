@@ -5,9 +5,10 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 class Config:
     # Security
     SECRET_KEY = os.environ.get('SECRET_KEY') or 'dev-fallback-secret-key'
+    FLASK_ENV = os.environ.get('FLASK_ENV', 'production')
 
     # Database
-    SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or 'sqlite:///bionic_pancreas.db'
+    SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or 'sqlite:///' + os.path.join(basedir, 'bionic_pancreas.db').replace('\\', '/')
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
     # Simulation Parameters
@@ -21,6 +22,7 @@ class Config:
 
     # Telegram Bot
     TELEGRAM_BOT_TOKEN = os.environ.get('TELEGRAM_BOT_TOKEN')
+    TELEGRAM_CHAT_ID = os.environ.get('TELEGRAM_CHAT_ID')
 
     # Upload configuration
     UPLOAD_FOLDER = os.environ.get('UPLOAD_FOLDER') or os.path.join(basedir, 'static/uploads')

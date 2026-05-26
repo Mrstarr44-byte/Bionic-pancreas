@@ -2,7 +2,7 @@ from datetime import datetime, timezone
 from typing import List, Optional
 
 from flask_login import UserMixin
-from werkzeug.security import generate_password_hash, check_password_hash
+import bcrypt
 from sqlalchemy import String, Integer, Float, ForeignKey, DateTime
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
@@ -27,12 +27,12 @@ class User(UserMixin, db.Model):
     )
 
     def set_password(self, password: str) -> None:
-        self.password_hash = generate_password_hash(password)
+        self.password_hash = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
 
     def check_password(self, password: str) -> bool:
         if self.password_hash is None:
             return False
-        return check_password_hash(self.password_hash, password)
+        return bcrypt.checkpw(password.encode('utf-8'), self.password_hash.encode('utf-8'))
 
     def __repr__(self) -> str:
         return f'<User {self.username}>'
