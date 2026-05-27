@@ -456,12 +456,12 @@ AI agent aşağıdaki kurallara HARFİYEN uymalıdır:
 | 10.2 | 404 ve 500 sayfaları | 10.1 | ✅ Tamamlandı |
 | 11.1 | Chart.js entegrasyonu | 6.2 | ✅ Tamamlandı |
 | 11.2 | Hücre animasyonları | 11.1 | ✅ Tamamlandı |
-| 12.1 | pytest testleri | 3.2, 6.1, 8.1 | ⏳ Bekliyor |
-| 12.2 | flake8 yapılandırması | 1.2 | ⏳ Bekliyor |
-| 13.1 | Dockerfile yaz | 1.2 | ⏳ Bekliyor |
-| 13.2 | docker-compose yaz | 13.1 | ⏳ Bekliyor |
+| 12.1 | pytest testleri | 3.2, 6.1, 8.1 | ✅ Tamamlandı |
+| 12.2 | flake8 yapılandırması | 1.2 | ✅ Tamamlandı |
+| 13.1 | Dockerfile yaz | 1.2 | ✅ Tamamlandı |
+| 13.2 | docker-compose yaz | 13.1 | ✅ Tamamlandı |
 | 13.3 | .env.example oluştur | 1.3 | ✅ Tamamlandı |
-| 13.4 | run.py oluştur | 1.4 | ⏳ Bekliyor |
+| 13.4 | run.py oluştur | 1.4 | ✅ Tamamlandı |
 
 ---
 

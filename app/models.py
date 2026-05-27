@@ -3,7 +3,7 @@ from typing import List, Optional
 
 from flask_login import UserMixin
 import bcrypt
-from sqlalchemy import String, Integer, Float, ForeignKey, DateTime
+from sqlalchemy import String, Integer, Float, ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app import db, login
@@ -16,7 +16,7 @@ class User(UserMixin, db.Model):
     username: Mapped[str] = mapped_column(String(64), index=True, unique=True)
     email: Mapped[str] = mapped_column(String(120), index=True, unique=True)
     password_hash: Mapped[Optional[str]] = mapped_column(String(256))
-    
+
     language: Mapped[str] = mapped_column(String(5), default='tr')
     telegram_id: Mapped[Optional[str]] = mapped_column(String(50), unique=True, index=True)
     avatar_filename: Mapped[Optional[str]] = mapped_column(String(255))
@@ -57,14 +57,14 @@ class SimulationLog(db.Model):
 
     id: Mapped[int] = mapped_column(primary_key=True)
     user_id: Mapped[int] = mapped_column(ForeignKey('users.id'))
-    
+
     action_type: Mapped[str] = mapped_column(String(50))
     value: Mapped[float] = mapped_column(Float)
     glucose_before: Mapped[Optional[float]] = mapped_column(Float)
     glucose_after: Mapped[Optional[float]] = mapped_column(Float)
     cell_status: Mapped[Optional[str]] = mapped_column(String(50))
     mode: Mapped[Optional[str]] = mapped_column(String(50))
-    
+
     timestamp: Mapped[datetime] = mapped_column(
         default=lambda: datetime.now(timezone.utc)
     )
@@ -73,6 +73,7 @@ class SimulationLog(db.Model):
 
     def __repr__(self) -> str:
         return f'<SimulationLog {self.action_type} - Value: {self.value}>'
+
 
 @login.user_loader
 def load_user(id):

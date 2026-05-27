@@ -1,0 +1,31 @@
+version: '3.8'
+
+services:
+  web:
+    build: .
+    container_name: bionic_pancreas_web
+    ports:
+      - "5001:5000"
+    env_file:
+      - .env
+    environment:
+      - DATABASE_URL=sqlite:////app/instance/bionic_pancreas.db
+      - FLASK_ENV=production
+    volumes:
+      - ./instance:/app/instance
+    command: gunicorn --bind 0.0.0.0:5000 run:app
+    restart: unless-stopped
+
+  bot:
+    build: .
+    container_name: bionic_pancreas_bot
+    env_file:
+      - .env
+    environment:
+      - DATABASE_URL=sqlite:////app/instance/bionic_pancreas.db
+    volumes:
+      - ./instance:/app/instance
+    command: python -m app.telegram_bot.bot
+    restart: unless-stopped
+    depends_on:
+      - web

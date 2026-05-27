@@ -222,31 +222,49 @@ Kullanıcının yediği öğünleri veritabanına kaydedip listeleyebileceği "M
 ### Sonraki Oturum İçin Notlar
 Uygulamanın veri girişi ve simülasyon arayüzleri tamamlandı. Bir sonraki adımda uygulamanın dış dünyayla konuşmasını sağlayacak API endpoint'inin (Görev 8.1) yazılmasına veya Telegram Bot (Görev 9.1) sisteminin inşasına başlanacaktır.
 
----
 
-## Oturum 8 - 27 Mayıs 2026 - 12:00-13:00
-
-### Hedef
-Projenin dış dünyayla iletişim kurmasını sağlayacak Telegram Bot (Görev 9.1) ve Bildirim (Notifier - Görev 9.2) altyapısının Webhook kullanılmadan, Polling mantığıyla sisteme entegre edilmesi. Senkron (Flask) ve Asenkron (python-telegram-bot v21.x) yapıların çakışmadan çalıştırılması.
-
-### Kullandığım Mod ve Model
-•	Mod: Plan
+Oturum 8 - 27 Mayıs 2026 - 11:30-14:20 
+Hedef
+Projenin dış dünyayla iletişim kurmasını sağlayacak Telegram Bot (Görev 9.1) ve Bildirim (Notifier - Görev 9.2) altyapısının Polling mantığıyla entegre edilmesi. Ardından, görselleştirme (Faz 1 - Şov Fazı) kapsamında Chart.js ile dinamik glukoz grafiği oluşturulması (Görev 11.1) ve sonuçlara göre PRG (Post/Redirect/Get) mimarisine uygun, dinamik UI/UX (Emoji ve Bootstrap Alert) geri bildirimleri verilmesi (Görev 11.2).
+Kullandığım Mod ve Model
+•	Mod: Plan & Fast
 •	Model: Claude Opus 4.6 (Kod Üretimi), DeepSeek (Code Reviewer), Gemini 3.1 Pro (Mimari Karar/Tech Lead)
 •	Görünüm: Antigravity IDE - Agent Chat / Editor View
+Verdiğim Promptlar
+	1.	"Görev 9.1 & 9.2: Kesinlikle Webhook KULLANILMAYACAK. Sistem Polling mantığıyla çalışacak. Flask içinden asenkron Telegram fonksiyonlarını çağırırken event loop hataları (RuntimeError) oluşmaması için güvenli bir wrapper tasarla."
+	2.	"Görev 11.1: /api/v1/simulations endpoint'ini fetch API ile dinle, sonuçları .reverse() ile kronolojik sıraya diz ve Chart.js (Annotation plugin ile) 70-180 referans çizgileri çekerek ekrana çiz."
+	3.	"Görev 11.2: Simülasyon sonucuna göre hücre animasyonları (😊, 😓, 🥶) ekle. Form resubmission hatasını önlemek için PRG pattern kullan (POST'ta session'a yaz, GET'te session.pop ile al)."
+	4.	"UI/UX İyileştirmesi: Havada asılı duran emojileri ve robotik 'Hızlı karbonhidrat alın' çevirilerini sil; yerine duruma göre renk değiştiren (alert-danger, alert-success) Bootstrap Alert kutuları ve doğal/insani medikal uyarı metinleri ekle."
+Karşılaşılan Sorunlar ve Mimari Müdahaleler
+•	Ajan Çatışması (Thread vs Multi-Process): Telegram entegrasyonunda DeepSeek, botu Flask'ın içinde bir threading.Thread açarak başlatmayı önerdi. Bunun Production'da "Conflict" yaratacak büyük bir Anti-Pattern olduğunu tespit edip reddettim; botu web sunucusundan bağımsız ayrı bir process olarak çalıştırdım.
+•	Veri Kaybı Bug'ı: Grafiğin başlangıçta boş çıkması üzerine, motorun veriyi hesapladığı ancak SimulationLog tablosuna kaydetmediği tespit edildi. Prompt ile ajana routes.py içinde db.session.add(log) işlemi zorunlu tutuldu.
+•	Ajanın Kendini Düzeltmesi (Self-Correction): Ajan grafiği düzeltirken veritabanına kayıt atarken modelde olmayan (action_type, cell_status) sütunlar uydurdu. Ancak kodu güncelleme aşamasında Antigravity ajanı kendi inisiyatifiyle models.py dosyamı okuyup bu sütunların olmadığını fark etti ve "IntegrityError (500) almamak için bu alanları sildim" diyerek kodun çökmesini engelledi.
+•	UX ve Veri Tipi Kararı (Integer vs Float): Orijinal formdaki FloatField'lar 0.0 varsayılan değeriyle sağa yaslı gelerek kötü bir UX sunuyordu. Tam Otonom mod (mikro-bolus) için arka plan hesaplamalarının Float kalmasına, ancak manuel kullanıcı giriş formunun (IntegerField) tam sayıya dönüştürülmesine ve sola yaslanmasına karar verdim.
+Bu Oturumdan Öğrendiğim
+•	İki farklı yapay zeka ajanının mimari bir konuda tamamen zıt kararlar verebildiğini, Vibe Coding'in sadece kod yazdırmak değil ajanların önerilerini filtreleyip doğru Trade-off kararlarını verebilmek olduğunu tecrübe ettim.
+•	Bildirimlerin (Notifier) yaklaşık 5 saniye gecikmeli gelmesinin sebebinin, yazdığımız güvenli senkron/asenkron wrapper'ın her seferinde yeni bir SSL bağlantısı açması olduğunu analiz ettim; ancak uygulamanın çökmemesi (Event Loop Crash) adına bu performans kaybını bilinçli kabul ettim.
+•	Medikal bir uygulamada teknik metinlerin ("fast-acting carbs") doğrudan çevirisinin sokaktaki kullanıcı için komik ve anlamsız olabileceğini ("60 km/s hızla gelen karbonhidrat" esprisi), UI metinlerinin her zaman insan doğasına uygun tasarlanması gerektiğini gördüm.
+Sonraki Oturum İçin Notlar
+Projenin API, Telegram ve Görsel Şov kısımları tek bir aralıksız oturumda başarıyla tamamlandı. Sistemin sağlamlığını kanıtlamak için test otomasyonu (Görev 12.1 - pytest) ve kod kalitesi (12.2 - flake8) aşamalarına geçilecek.
 
-### Verdiğim Promptlar
-1.	"Görev 9.1 & 9.2: Kesinlikle Webhook KULLANILMAYACAK. Sistem Polling mantığıyla çalışacak. TELEGRAM_BOT_TOKEN gizli tutulacak (.env). Flask içinden asenkron Telegram fonksiyonlarını çağırırken event loop hataları (RuntimeError) oluşmaması için güvenli bir wrapper tasarla."
-
-### Ajanın Önerdiği Plan ve Çoklu-Ajan (Multi-Agent) Çatışması
-•	Claude'un Planı: Antigravity içindeki Claude, asenkron python-telegram-bot kütüphanesini Flask içinde kullanabilmek için notifier.py dosyasında kısa ömürlü bir asyncio.run() wrapper'ı önerdi. Sürekli dinleme (polling) yapan ana botu ise Flask'tan tamamen bağımsız, ayrı bir process olarak (python -m app.telegram_bot.bot) çalıştırmayı teklif etti.
-•	DeepSeek'in İtirazı (AI Halüsinasyonu): Üretilen planı DeepSeek'e denetlettiğimde bana kritik bir uyarı verdi: "Botu Flask'tan bağımsız çalıştırma, app/__init__.py içinde bir threading.Thread açarak Flask ile birlikte başlat."
-•	Mimari Müdahalem (Reject & Override): Bir yazılım mimarı olarak, DeepSeek'in önerdiği Thread modelinin büyük bir mimari hata (Anti-Pattern) olduğunu tespit ettim. Eğer botu Flask'ın içine gömseydim, Flask'ın her "reloader" tetiklenmesinde veya Production ortamında Gunicorn çoklu "worker" açtığında Telegram API'sine aynı anda birden fazla bot instance'ı bağlanmaya çalışacak ve "Conflict" hatasıyla sistem çökecekti.
-•	DeepSeek'in bu hatalı önerisini reddettim ve Claude'un sunduğu, web sunucusu ile botu birbirine karıştırmayan Mikroservis (Ayrı Process) planını onayladım.
-
-### Üretilen Kodda Düzelttiklerim / Belirlediklerim
-•	app/telegram_bot/notifier.py içerisine, Flask'ın senkron request/response döngüsünü bozmadan Telegram'a bildirim atabilen güvenli asyncio.run(bot.send_message(...)) yapısı kuruldu.
-•	Güvenlik ihlalini önlemek için .env.example dosyası yer tutucularla (placeholder) ajana ürettirildi; gerçek secret key'ler (Token ve Chat ID) ajandan gizlenerek Vibe Coding GÜVENLİK UYARISI kurallarına uygun şekilde sisteme manuel eklendi.
-
-### Bu Oturumdan Öğrendiğim
-•	İki farklı yapay zeka ajanının (Claude ve DeepSeek) mimari bir konuda tamamen zıt kararlar verebildiğini gördüm. Vibe Coding'in sadece kod yazdırmak değil, ajanların önerilerini (Thread vs Multi-Process) kendi teknik filtremden geçirerek doğru kararı (Trade-off) verebilmek olduğunu tecrübe ettim.
-•	Bildirimlerin (Notifier) yaklaşık 5 saniye gecikmeli gelmesinin sebebinin, yazdığımız güvenli wrapper'ın her seferinde yeni bir SSL bağlantısı açması olduğunu (DeepSeek'in uyarısıyla) analiz ettim; ancak uygulamanın çökmemesi (Event Loop Crash) adına bu performans kaybını bilinçli bir tercih olarak kabul ettim.
+Oturum 9 - 27 Mayıs 2026 - 19:00-20:20
+Hedef
+Sistemin güvenilirliğini ve kalitesini kanıtlamak amacıyla pytest framework'ü kullanılarak birim (unit) ve entegrasyon testlerinin yazılması (Görev 12.1). Projenin tüm Python dosyalarının PEP8 standartlarına uygun hale getirilmesi amacıyla flake8 yapılandırmasının tamamlanması (Görev 12.2). Uygulamanın başlatıcı noktası (run.py - Görev 13.4), Dockerfile (Görev 13.1) ve docker-compose.yml (Görev 13.2) dosyalarının oluşturularak projenin mikroservis ve DevOps standartlarında Dockerize edilmesi.
+Kullandığım Mod ve Model
+•	Mod: Plan & Fast
+•	Model: GPT-OSS 120B (Medium) -> Gemini 3.1 Pro (High) -> Claude Opus 4.6
+•	Görünüm: Antigravity IDE - Agent Chat / Editor View
+Verdiğim Promptlar
+	1.	"Görev 12.1: pytest testleri yaz. Geçici test veritabanı (sqlite:///:memory:) kullan, WTF_CSRF_ENABLED=False ile CSRF'i testlerde kapat. Auth, API ve Simulation Engine için bağımsız test senaryoları (tests/ klasöründe) oluştur."
+	2.	"Görev 12.2: Proje köküne .flake8 dosyası oluştur (max-line-length = 120, ignore = E203, W503). Tüm Python dosyalarını incele ve koddaki stil hatalarını mantığı bozmadan düzelt. README.md dosyasının tamamını KESİNLİKLE baştan yazma, nokta atışı satır güncellemesi yap."
+	3.	"Görev 13.1, 13.2 ve 13.4: Projenin Dockerizasyonu ve Mikroservis Mimarisi. run.py oluştur. Dockerfile yaz (python:3.11-slim). docker-compose.yml içinde 'web' (gunicorn ile) ve 'bot' (python -m app.telegram_bot.bot) olmak üzere iki ayrı servis tanımla, SQLite veri kaybını önlemek için instance/ klasörünü volume mount et. README'de sadece ilgili satırları tamamlandı yap."
+Karşılaşılan Sorunlar ve Mimari Müdahaleler
+•	Kritik AI Hatası (Destructive Truncation - Yıkıcı Kırpma): GPT-OSS 120B modeli test dosyalarının planlamasını kusursuz kurdu ancak görev sonunda README.md dosyasındaki ilgili satırı güncellerken "Üşengeç Çıktı" (Lazy Output) üretti. Sadece değişen 2 satırı çıktı olarak verdi ve tüm proje anayasasını silme teklifi (Diff: +2, -510) sundu. Tehlikeyi anında fark edip değişikliği tamamen reddettim (Reject) ve operasyonu sınırlandırdım.
+•	Flake8 Şafak Operasyonu (80 Stil Hatası): Kod müfettişi (flake8) çalıştırıldığında projenin genelinde fonksiyonlar arası boşluklar (E302) ve satır sonu boşlukları (W293) kaynaklı 80 adet stil hatası raporlandı. Kodun iş mantığına dokunulmadan tüm makyaj hataları temizlendi.
+•	Mimari Koruma ve # noqa Tercihi: Claude Opus, Flask Blueprint yapısının doğası gereği __init__.py içinde yer alan ve dairesel bağımlılıkları çözen importları "kullanılmayan import (F401)" sanarak silmeye kalkmadı; aksine üst düzey bir mimari zekayla bu satırları # noqa ile işaretleyerek uygulamanın çökmesini (Crash loop) engelledi.
+•	Gunicorn ve Production Entegrasyonu: Docker mimarisine geçerken Flask'ın dahili geliştirici sunucusu yerine gerçek dünya standartlarında çoklu isteklere yanıt verebilen gunicorn yapısı kurgulandı. requirements.txt dosyasındaki paket bağımlılıkları kontrol edilerek gunicorn sürümü (gunicorn==23.0.0) kilitlendi.
+•	Lokal Çevre Sorunu (Local Environment Error): Konteynerleri ayağa kaldırırken terminalde alınan zsh: command not found: docker-compose hatası analiz edildi. Sorunun yazılan kodlarla veya Docker konfigürasyonuyla ilgisi olmadığı, tamamen yerel makinedeki Docker CLI versiyon güncelliği / Docker Desktop servisinin kapalı olmasıyla ilgili olduğu tespit edilerek docker compose up --build modern sentaksına geçiş yapıldı.
+Bu Oturumdan Öğrendiğim
+•	120 milyar parametreli devasa yapay zeka modellerinin bile "bağlamı unutup" yıkıcı dosya kırpma hataları yapabileceğini birinci elden deneyimledim. Vibe Coding'de yazılımcının asıl rolünün otonom süreci satır satır denetleyen bir "Code Reviewer" (Kod Denetmeni) ve proje bekçisi olmak olduğunu kavradım.
+•	Flake8 gibi statik analiz araçlarının sadece kodun dış görünüşünü değil, projenin kurumsal standartlara uygunluğunu (PEP8) belirlemede ne kadar kritik olduğunu gördüm.
+•	Monolitik bir yapıyı Docker Compose kullanarak bağımsız iki mikroservis (Web ve Bot) olarak ayağa kaldırmayı, veri kaybını önlemek için Docker hacim köprülerini (Volume mount) ve servis sıralamalarını (depends_on) kurgulamayı öğrenerek gerçek bir DevOps tecrübesi edindim.

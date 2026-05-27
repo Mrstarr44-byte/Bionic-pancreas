@@ -3,6 +3,7 @@ from app.models import User, MealPreset
 
 app = create_app()
 
+
 def seed_database():
     with app.app_context():
         # Check if database is already seeded
@@ -59,8 +60,9 @@ def seed_database():
 
         db.session.add_all(meals)
         db.session.commit()
-        
+
         print(f"Seed işlemi tamamlandı: 1 kullanıcı, {len(meals)} yemek eklendi.")
+
 
 if __name__ == "__main__":
     seed_database()

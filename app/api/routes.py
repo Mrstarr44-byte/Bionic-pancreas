@@ -7,6 +7,7 @@ from app import db
 from app.models import SimulationLog
 from sqlalchemy import select, desc
 
+
 @bp.route('/simulations', methods=['GET'])
 @login_required
 def get_simulations():

@@ -49,8 +49,8 @@
   "Henüz simülasyon verisi yok.": "No simulation data yet.",
   "Hipoglisemi Sınırı": "Hypoglycemia Threshold",
   "Hiperglisemi Sınırı": "Hyperglycemia Threshold",
-  "Düşük kan şekeri! Hızlı karbonhidrat alın.": "Low blood sugar! Take fast-acting carbs.",
-  "Yüksek kan şekeri! İnsülin kontrolü gerekli.": "High blood sugar! Insulin control needed.",
-  "Değerleriniz normal aralıkta. Tebrikler!": "Your values are in normal range. Congratulations!",
+  "Kan şekeriniz çok düşük! Acilen meyve suyu veya kesme şeker tüketin.": "Blood sugar is too low! Consume juice or sugar cubes immediately.",
+  "Kan şekeriniz yüksek! İnsülin dozunuzu kontrol etmelisiniz.": "Blood sugar is high! You should check your insulin dose.",
+  "Harika! Kan şekeriniz tam olması gerektiği gibi.": "Great! Your blood sugar is exactly where it should be.",
   "Simülasyon yaparak hücre durumunu görün.": "Run a simulation to see cell status."
 }

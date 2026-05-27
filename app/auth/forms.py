@@ -4,11 +4,13 @@ from wtforms.validators import DataRequired, Email, EqualTo, ValidationError
 from app import db
 from app.models import User
 
+
 class LoginForm(FlaskForm):
     username = StringField('Kullanıcı Adı', validators=[DataRequired()])
     password = PasswordField('Şifre', validators=[DataRequired()])
     remember_me = BooleanField('Beni Hatırla')
     submit = SubmitField('Giriş Yap')
+
 
 class RegistrationForm(FlaskForm):
     username = StringField('Kullanıcı Adı', validators=[DataRequired()])

@@ -13,6 +13,7 @@ login = LoginManager()
 babel = Babel()
 csrf = CSRFProtect()
 
+
 def create_app(config_class=Config):
     app = Flask(__name__)
     app.config.from_object(config_class)
@@ -41,7 +42,7 @@ def create_app(config_class=Config):
     app.register_blueprint(meals_bp, url_prefix='/meals')
 
     from app.api import bp as api_bp
-    app.register_blueprint(api_bp) # url_prefix='/api/v1' is set in api/__init__.py
+    app.register_blueprint(api_bp)  # url_prefix='/api/v1' is set in api/__init__.py
 
     from app.errors import bp as errors_bp
     app.register_blueprint(errors_bp)
@@ -50,6 +51,7 @@ def create_app(config_class=Config):
     def inject_translation():
         from flask import session
         from app.translations import get_text
+
         def translate(key):
             lang = session.get('lang', 'tr')
             return get_text(lang, key)

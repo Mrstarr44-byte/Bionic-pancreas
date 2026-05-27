@@ -3,20 +3,24 @@
 <div class="row justify-content-center">
     <div class="col-md-6">
         <h2>{{ _('Simülasyon Motoru') }}</h2>
-        <div id="cellAnimation" class="text-center mb-4" style="font-size: 5rem;">
-            {% if last_status == 'hypoglycemia' %}🥶
-            {% elif last_status == 'hyperglycemia' %}😓
-            {% elif last_status == 'normal' %}😊
-            {% else %}🩸
-            {% endif %}
+        {% if last_status %}
+        <div class="alert {% if last_status == 'hypoglycemia' %}alert-danger{% elif last_status == 'hyperglycemia' %}alert-warning{% elif last_status == 'normal' %}alert-success{% else %}alert-info{% endif %} text-center shadow-sm mb-4" role="alert">
+            <div id="cellAnimation" style="font-size: 4rem; line-height: 1;">
+                {% if last_status == 'hypoglycemia' %}🥶
+                {% elif last_status == 'hyperglycemia' %}😓
+                {% elif last_status == 'normal' %}😊
+                {% else %}🩸
+                {% endif %}
+            </div>
+            <h5 class="alert-heading mt-3 mb-1">
+                {% if last_status == 'hypoglycemia' %}{{ _('Kan şekeriniz çok düşük! Acilen meyve suyu veya kesme şeker tüketin.') }}
+                {% elif last_status == 'hyperglycemia' %}{{ _('Kan şekeriniz yüksek! İnsülin dozunuzu kontrol etmelisiniz.') }}
+                {% elif last_status == 'normal' %}{{ _('Harika! Kan şekeriniz tam olması gerektiği gibi.') }}
+                {% else %}{{ _('Simülasyon yaparak hücre durumunu görün.') }}
+                {% endif %}
+            </h5>
         </div>
-        <div class="text-center text-muted mb-4">
-            {% if last_status == 'hypoglycemia' %}{{ _('Düşük kan şekeri! Hızlı karbonhidrat alın.') }}
-            {% elif last_status == 'hyperglycemia' %}{{ _('Yüksek kan şekeri! İnsülin kontrolü gerekli.') }}
-            {% elif last_status == 'normal' %}{{ _('Değerleriniz normal aralıkta. Tebrikler!') }}
-            {% else %}{{ _('Simülasyon yaparak hücre durumunu görün.') }}
-            {% endif %}
-        </div>
+        {% endif %}
         <form method="POST">
             {{ form.hidden_tag() }}
             <div class="mb-3">
