@@ -42,5 +42,15 @@
   "Kategori": "Category",
   "Ekle": "Add",
   "Yemek başarıyla eklendi": "Meal added successfully",
-  "Henüz yemek eklenmemiş.": "No meals added yet."
+  "Henüz yemek eklenmemiş.": "No meals added yet.",
+  "Glukoz Takip Grafiği": "Glucose Tracking Chart",
+  "Önceki Değer": "Before Value",
+  "Sonraki Değer": "After Value",
+  "Henüz simülasyon verisi yok.": "No simulation data yet.",
+  "Hipoglisemi Sınırı": "Hypoglycemia Threshold",
+  "Hiperglisemi Sınırı": "Hyperglycemia Threshold",
+  "Düşük kan şekeri! Hızlı karbonhidrat alın.": "Low blood sugar! Take fast-acting carbs.",
+  "Yüksek kan şekeri! İnsülin kontrolü gerekli.": "High blood sugar! Insulin control needed.",
+  "Değerleriniz normal aralıkta. Tebrikler!": "Your values are in normal range. Congratulations!",
+  "Simülasyon yaparak hücre durumunu görün.": "Run a simulation to see cell status."
 }

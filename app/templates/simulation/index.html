@@ -3,6 +3,20 @@
 <div class="row justify-content-center">
     <div class="col-md-6">
         <h2>{{ _('Simülasyon Motoru') }}</h2>
+        <div id="cellAnimation" class="text-center mb-4" style="font-size: 5rem;">
+            {% if last_status == 'hypoglycemia' %}🥶
+            {% elif last_status == 'hyperglycemia' %}😓
+            {% elif last_status == 'normal' %}😊
+            {% else %}🩸
+            {% endif %}
+        </div>
+        <div class="text-center text-muted mb-4">
+            {% if last_status == 'hypoglycemia' %}{{ _('Düşük kan şekeri! Hızlı karbonhidrat alın.') }}
+            {% elif last_status == 'hyperglycemia' %}{{ _('Yüksek kan şekeri! İnsülin kontrolü gerekli.') }}
+            {% elif last_status == 'normal' %}{{ _('Değerleriniz normal aralıkta. Tebrikler!') }}
+            {% else %}{{ _('Simülasyon yaparak hücre durumunu görün.') }}
+            {% endif %}
+        </div>
         <form method="POST">
             {{ form.hidden_tag() }}
             <div class="mb-3">
@@ -30,4 +44,150 @@
         </form>
     </div>
 </div>
+
+<!-- Glukoz Takip Grafiği -->
+<div class="row justify-content-center mt-4">
+    <div class="col-md-10">
+        <div class="card shadow-sm">
+            <div class="card-header bg-dark text-white">
+                <h5 class="mb-0">📈 {{ _('Glukoz Takip Grafiği') }}</h5>
+            </div>
+            <div class="card-body">
+                <div id="chartMessage" class="text-center text-muted py-4 d-none">
+                    {{ _('Henüz simülasyon verisi yok.') }}
+                </div>
+                <canvas id="glucoseChart" height="300"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const canvas = document.getElementById('glucoseChart');
+    const msgDiv = document.getElementById('chartMessage');
+
+    fetch('/api/v1/simulations?per_page=50')
+        .then(response => response.json())
+        .then(result => {
+            if (result.status !== 'success' || !result.data || result.data.length === 0) {
+                canvas.style.display = 'none';
+                msgDiv.classList.remove('d-none');
+                return;
+            }
+
+            // Veriyi kronolojik sıraya çevir (API desc döner)
+            const data = result.data.reverse();
+
+            const labels = data.map(d => {
+                if (!d.timestamp) return '—';
+                const dt = new Date(d.timestamp);
+                return dt.toLocaleDateString('tr-TR', { day: '2-digit', month: '2-digit' })
+                     + ' ' + dt.toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' });
+            });
+
+            const glucoseBefore = data.map(d => d.glucose_before);
+            const glucoseAfter  = data.map(d => d.glucose_after);
+
+            new Chart(canvas, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: '{{ _("Önceki Değer") }}',
+                            data: glucoseBefore,
+                            borderColor: 'rgba(54, 162, 235, 1)',
+                            backgroundColor: 'rgba(54, 162, 235, 0.1)',
+                            borderWidth: 2,
+                            tension: 0.3,
+                            pointRadius: 4,
+                            pointBackgroundColor: 'rgba(54, 162, 235, 1)',
+                            fill: false
+                        },
+                        {
+                            label: '{{ _("Sonraki Değer") }}',
+                            data: glucoseAfter,
+                            borderColor: 'rgba(75, 192, 192, 1)',
+                            backgroundColor: 'rgba(75, 192, 192, 0.1)',
+                            borderWidth: 2,
+                            tension: 0.3,
+                            pointRadius: 4,
+                            pointBackgroundColor: 'rgba(75, 192, 192, 1)',
+                            fill: false
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'top'
+                        },
+                        annotation: {
+                            annotations: {
+                                hypoLine: {
+                                    type: 'line',
+                                    yMin: 70,
+                                    yMax: 70,
+                                    borderColor: 'rgba(220, 53, 69, 0.8)',
+                                    borderWidth: 2,
+                                    borderDash: [6, 4],
+                                    label: {
+                                        display: true,
+                                        content: '{{ _("Hipoglisemi Sınırı") }} (70)',
+                                        position: 'start',
+                                        backgroundColor: 'rgba(220, 53, 69, 0.8)',
+                                        color: '#fff',
+                                        font: { size: 11 }
+                                    }
+                                },
+                                hyperLine: {
+                                    type: 'line',
+                                    yMin: 180,
+                                    yMax: 180,
+                                    borderColor: 'rgba(255, 152, 0, 0.8)',
+                                    borderWidth: 2,
+                                    borderDash: [6, 4],
+                                    label: {
+                                        display: true,
+                                        content: '{{ _("Hiperglisemi Sınırı") }} (180)',
+                                        position: 'start',
+                                        backgroundColor: 'rgba(255, 152, 0, 0.8)',
+                                        color: '#fff',
+                                        font: { size: 11 }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            title: {
+                                display: true,
+                                text: 'mg/dL'
+                            },
+                            suggestedMin: 40,
+                            suggestedMax: 250
+                        },
+                        x: {
+                            ticks: {
+                                maxRotation: 45,
+                                maxTicksLimit: 12
+                            }
+                        }
+                    }
+                }
+            });
+        })
+        .catch(err => {
+            console.error('Grafik verisi yüklenemedi:', err);
+            canvas.style.display = 'none';
+            msgDiv.classList.remove('d-none');
+        });
+});
+</script>
 {% endblock %}

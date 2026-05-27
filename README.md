@@ -449,18 +449,18 @@ AI agent aşağıdaki kurallara HARFİYEN uymalıdır:
 | 6.3 | simulation forms oluştur | 3.1 | ✅ Tamamlandı |
 | 7.1 | meals routes + pagination | 2.1 | ✅ Tamamlandı |
 | 7.2 | meals.html oluştur | 7.1 | ✅ Tamamlandı |
-| 8.1 | API endpoint oluştur | 2.1 | ⏳ Bekliyor |
-| 9.1 | Telegram bot sistemi | 1.3 | ⏳ Bekliyor |
-| 9.2 | notifier sistemi | 9.1 | ⏳ Bekliyor |
+| 8.1 | API endpoint oluştur | 2.1 | ✅ Tamamlandı |
+| 9.1 | Telegram bot sistemi | 1.3 | ✅ Tamamlandı |
+| 9.2 | notifier sistemi | 9.1 | ✅ Tamamlandı |
 | 10.1 | error handlers yaz | 1.4 | ✅ Tamamlandı |
 | 10.2 | 404 ve 500 sayfaları | 10.1 | ✅ Tamamlandı |
-| 11.1 | Chart.js entegrasyonu | 6.2 | ⏳ Bekliyor |
-| 11.2 | Hücre animasyonları | 11.1 | ⏳ Bekliyor |
+| 11.1 | Chart.js entegrasyonu | 6.2 | ✅ Tamamlandı |
+| 11.2 | Hücre animasyonları | 11.1 | ✅ Tamamlandı |
 | 12.1 | pytest testleri | 3.2, 6.1, 8.1 | ⏳ Bekliyor |
 | 12.2 | flake8 yapılandırması | 1.2 | ⏳ Bekliyor |
 | 13.1 | Dockerfile yaz | 1.2 | ⏳ Bekliyor |
 | 13.2 | docker-compose yaz | 13.1 | ⏳ Bekliyor |
-| 13.3 | .env.example oluştur | 1.3 | ⏳ Bekliyor |
+| 13.3 | .env.example oluştur | 1.3 | ✅ Tamamlandı |
 | 13.4 | run.py oluştur | 1.4 | ⏳ Bekliyor |
 
 ---

@@ -42,5 +42,15 @@
   "Kategori": "Kategori",
   "Ekle": "Ekle",
   "Yemek başarıyla eklendi": "Yemek başarıyla eklendi",
-  "Henüz yemek eklenmemiş.": "Henüz yemek eklenmemiş."
+  "Henüz yemek eklenmemiş.": "Henüz yemek eklenmemiş.",
+  "Glukoz Takip Grafiği": "Glukoz Takip Grafiği",
+  "Önceki Değer": "Önceki Değer",
+  "Sonraki Değer": "Sonraki Değer",
+  "Henüz simülasyon verisi yok.": "Henüz simülasyon verisi yok.",
+  "Hipoglisemi Sınırı": "Hipoglisemi Sınırı",
+  "Hiperglisemi Sınırı": "Hiperglisemi Sınırı",
+  "Düşük kan şekeri! Hızlı karbonhidrat alın.": "Düşük kan şekeri! Hızlı karbonhidrat alın.",
+  "Yüksek kan şekeri! İnsülin kontrolü gerekli.": "Yüksek kan şekeri! İnsülin kontrolü gerekli.",
+  "Değerleriniz normal aralıkta. Tebrikler!": "Değerleriniz normal aralıkta. Tebrikler!",
+  "Simülasyon yaparak hücre durumunu görün.": "Simülasyon yaparak hücre durumunu görün."
 }

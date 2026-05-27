@@ -221,3 +221,32 @@ Kullanıcının yediği öğünleri veritabanına kaydedip listeleyebileceği "M
 
 ### Sonraki Oturum İçin Notlar
 Uygulamanın veri girişi ve simülasyon arayüzleri tamamlandı. Bir sonraki adımda uygulamanın dış dünyayla konuşmasını sağlayacak API endpoint'inin (Görev 8.1) yazılmasına veya Telegram Bot (Görev 9.1) sisteminin inşasına başlanacaktır.
+
+---
+
+## Oturum 8 - 27 Mayıs 2026 - 12:00-13:00
+
+### Hedef
+Projenin dış dünyayla iletişim kurmasını sağlayacak Telegram Bot (Görev 9.1) ve Bildirim (Notifier - Görev 9.2) altyapısının Webhook kullanılmadan, Polling mantığıyla sisteme entegre edilmesi. Senkron (Flask) ve Asenkron (python-telegram-bot v21.x) yapıların çakışmadan çalıştırılması.
+
+### Kullandığım Mod ve Model
+•	Mod: Plan
+•	Model: Claude Opus 4.6 (Kod Üretimi), DeepSeek (Code Reviewer), Gemini 3.1 Pro (Mimari Karar/Tech Lead)
+•	Görünüm: Antigravity IDE - Agent Chat / Editor View
+
+### Verdiğim Promptlar
+1.	"Görev 9.1 & 9.2: Kesinlikle Webhook KULLANILMAYACAK. Sistem Polling mantığıyla çalışacak. TELEGRAM_BOT_TOKEN gizli tutulacak (.env). Flask içinden asenkron Telegram fonksiyonlarını çağırırken event loop hataları (RuntimeError) oluşmaması için güvenli bir wrapper tasarla."
+
+### Ajanın Önerdiği Plan ve Çoklu-Ajan (Multi-Agent) Çatışması
+•	Claude'un Planı: Antigravity içindeki Claude, asenkron python-telegram-bot kütüphanesini Flask içinde kullanabilmek için notifier.py dosyasında kısa ömürlü bir asyncio.run() wrapper'ı önerdi. Sürekli dinleme (polling) yapan ana botu ise Flask'tan tamamen bağımsız, ayrı bir process olarak (python -m app.telegram_bot.bot) çalıştırmayı teklif etti.
+•	DeepSeek'in İtirazı (AI Halüsinasyonu): Üretilen planı DeepSeek'e denetlettiğimde bana kritik bir uyarı verdi: "Botu Flask'tan bağımsız çalıştırma, app/__init__.py içinde bir threading.Thread açarak Flask ile birlikte başlat."
+•	Mimari Müdahalem (Reject & Override): Bir yazılım mimarı olarak, DeepSeek'in önerdiği Thread modelinin büyük bir mimari hata (Anti-Pattern) olduğunu tespit ettim. Eğer botu Flask'ın içine gömseydim, Flask'ın her "reloader" tetiklenmesinde veya Production ortamında Gunicorn çoklu "worker" açtığında Telegram API'sine aynı anda birden fazla bot instance'ı bağlanmaya çalışacak ve "Conflict" hatasıyla sistem çökecekti.
+•	DeepSeek'in bu hatalı önerisini reddettim ve Claude'un sunduğu, web sunucusu ile botu birbirine karıştırmayan Mikroservis (Ayrı Process) planını onayladım.
+
+### Üretilen Kodda Düzelttiklerim / Belirlediklerim
+•	app/telegram_bot/notifier.py içerisine, Flask'ın senkron request/response döngüsünü bozmadan Telegram'a bildirim atabilen güvenli asyncio.run(bot.send_message(...)) yapısı kuruldu.
+•	Güvenlik ihlalini önlemek için .env.example dosyası yer tutucularla (placeholder) ajana ürettirildi; gerçek secret key'ler (Token ve Chat ID) ajandan gizlenerek Vibe Coding GÜVENLİK UYARISI kurallarına uygun şekilde sisteme manuel eklendi.
+
+### Bu Oturumdan Öğrendiğim
+•	İki farklı yapay zeka ajanının (Claude ve DeepSeek) mimari bir konuda tamamen zıt kararlar verebildiğini gördüm. Vibe Coding'in sadece kod yazdırmak değil, ajanların önerilerini (Thread vs Multi-Process) kendi teknik filtremden geçirerek doğru kararı (Trade-off) verebilmek olduğunu tecrübe ettim.
+•	Bildirimlerin (Notifier) yaklaşık 5 saniye gecikmeli gelmesinin sebebinin, yazdığımız güvenli wrapper'ın her seferinde yeni bir SSL bağlantısı açması olduğunu (DeepSeek'in uyarısıyla) analiz ettim; ancak uygulamanın çökmemesi (Event Loop Crash) adına bu performans kaybını bilinçli bir tercih olarak kabul ettim.
