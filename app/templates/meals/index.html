@@ -78,7 +78,7 @@
                 <td>{{ meal.name_en }}</td>
                 <td>{{ meal.carb_per_serving }}</td>
                 <td>{{ meal.gi_value }}</td>
-                <td>{{ meal.category or '—' }}</td>
+                <td>{{ _(meal.category) if meal.category else '—' }}</td>
             </tr>
         {% else %}
             <tr>

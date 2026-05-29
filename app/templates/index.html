@@ -4,7 +4,7 @@
 <div class="px-4 py-5 my-5 text-center">
     <h1 class="display-5 fw-bold text-primary mb-3">{{ _('Biyonik Pankreas Simülasyonu') }}</h1>
     <div class="col-lg-6 mx-auto">
-        <p class="lead mb-4">{{ _('Bu platform, Tip-1 Diyabet yönetimi için geliştirilmiş sanal bir hücre simülasyon motorudur. Kan şekeri, karbonhidrat ve insülin değerlerinizi girerek anlık sonuçları test edebilirsiniz.') }}</p>
+        <p class="lead mb-4">{{ _('home_description') }}</p>
         <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
             {% if current_user.is_authenticated %}
                 <a href="{{ url_for('simulation.index') }}" class="btn btn-primary btn-lg px-4 gap-3">{{ _('Simülasyona Başla') }}</a>

@@ -25,26 +25,40 @@
             {{ form.hidden_tag() }}
             <div class="mb-3">
                 {{ form.current_bg.label(class="form-label", text=_('Mevcut Kan Şekeri (mg/dL)')) }}
-                {{ form.current_bg(class="form-control") }}
+                {{ form.current_bg(class="form-control", placeholder=_('enter_value')) }}
                 {% for error in form.current_bg.errors %}
                     <div class="text-danger">{{ error }}</div>
                 {% endfor %}
             </div>
             <div class="mb-3">
+                <label for="mealSelect" class="form-label">{{ _('Hazır Yemek Seç') }}</label>
+                <select id="mealSelect" class="form-select">
+                    <option value="">{{ _('-- Seçiniz --') }}</option>
+                    {% for meal in meals %}
+                    <option value="{{ meal.carb_per_serving }}">{{ meal.name_tr }} ({{ meal.carb_per_serving }} g)</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="mb-3">
                 {{ form.carbs.label(class="form-label", text=_('Karbonhidrat (gram)')) }}
-                {{ form.carbs(class="form-control") }}
+                {{ form.carbs(class="form-control", placeholder=_('enter_value')) }}
                 {% for error in form.carbs.errors %}
                     <div class="text-danger">{{ error }}</div>
                 {% endfor %}
             </div>
             <div class="mb-3">
                 {{ form.insulin.label(class="form-label", text=_('İnsülin (Ünite)')) }}
-                {{ form.insulin(class="form-control") }}
+                {{ form.insulin(class="form-control", placeholder=_('enter_value')) }}
                 {% for error in form.insulin.errors %}
                     <div class="text-danger">{{ error }}</div>
                 {% endfor %}
             </div>
-            {{ form.submit(class="btn btn-primary", value=_('Simüle Et')) }}
+            <div class="d-flex gap-2">
+                {{ form.submit(class="btn btn-primary", value=_('Simüle Et')) }}
+                <button type="button" class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#resetConfirmModal">
+                    {{ _('Tüm Simülasyon Verilerini Sıfırla') }}
+                </button>
+            </div>
         </form>
     </div>
 </div>
@@ -65,11 +79,40 @@
         </div>
     </div>
 </div>
+<!-- Veri Sıfırlama Onay Modalı -->
+<div class="modal fade" id="resetConfirmModal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header bg-danger text-white">
+        <h5 class="modal-title">⚠️ {{ _('Tüm Simülasyon Verileri Silinecek') }}</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <p>{{ _('Bu işlem geri alınamaz. Tüm simülasyon geçmişiniz kalıcı olarak silinecektir. Emin misiniz?') }}</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ _('İptal') }}</button>
+        <form method="POST" action="{{ url_for('simulation.reset_simulations') }}">
+          <!-- CSRF Token -->
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+          <button type="submit" class="btn btn-danger">{{ _('Evet, Tüm Verilerimi Sil') }}</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
 {% endblock %}
 
 {% block scripts %}
 <script>
 document.addEventListener('DOMContentLoaded', function() {
+    document.getElementById('mealSelect').addEventListener('change', function() {
+        var carbsInput = document.getElementById('carbs');
+        if (this.value) {
+            carbsInput.value = this.value;
+        }
+    });
+
     const canvas = document.getElementById('glucoseChart');
     const msgDiv = document.getElementById('chartMessage');
 
